@@ -163,8 +163,8 @@ class UsersListDataTable extends AbstractDataTables
                 /*Edit link*/
                 $activeLink = route('admin::users.update-status.post', ['id' => $item->id, 'status' => 'activated']);
                 $disableLink = route('admin::users.update-status.post', ['id' => $item->id, 'status' => 'disabled']);
-                $deleteLink = route('admin::users.delete.delete', ['id' => $item->id]);
-                $forceDelete = route('admin::users.force-delete.delete', ['id' => $item->id]);
+                $deleteLink = route('admin::users.delete.post', ['id' => $item->id]);
+                $forceDelete = route('admin::users.force-delete.post', ['id' => $item->id]);
                 $restoreLink = route('admin::users.restore.post', ['id' => $item->id]);
 
                 /*Buttons*/
@@ -187,14 +187,14 @@ class UsersListDataTable extends AbstractDataTables
                     ? form()->button(trans('webed-core::datatables.delete'), [
                         'title' => trans('webed-core::datatables.delete_this_item'),
                         'data-ajax' => $deleteLink,
-                        'data-method' => 'DELETE',
+                        'data-method' => 'POST',
                         'data-toggle' => 'confirmation',
                         'class' => 'btn btn-outline red-sunglo btn-sm ajax-link',
                     ])
                     : form()->button(trans('webed-core::datatables.force_delete'), [
                         'title' => trans('webed-core::datatables.force_delete_this_item'),
                         'data-ajax' => $forceDelete,
-                        'data-method' => 'DELETE',
+                        'data-method' => 'POST',
                         'data-toggle' => 'confirmation',
                         'class' => 'btn btn-outline red-sunglo btn-sm ajax-link',
                     ]) . form()->button(trans('webed-core::datatables.restore'), [

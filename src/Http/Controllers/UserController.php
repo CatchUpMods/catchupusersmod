@@ -363,7 +363,7 @@ class UserController extends BaseAdminController
      * @param $id
      * @return \Illuminate\Http\JsonResponse
      */
-    public function deleteDelete($id)
+    public function postDelete($id)
     {
         if ($this->loggedInUser->id == $id) {
             $result = response_with_messages(trans($this->module . '::base.cannot_delete_yourself'), true, \Constants::ERROR_CODE);
