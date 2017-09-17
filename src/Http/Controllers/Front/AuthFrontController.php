@@ -40,8 +40,8 @@ class AuthFrontController extends BaseController
 
         $this->repository = $userRepository;
 
-        $this->redirectTo = $this->request->get('redirect') ? asset($this->request->get('redirect')) : asset('');
-        $this->redirectPath = $this->request->get('redirect') ? asset($this->request->get('redirect')) : asset('');
+        $this->redirectTo = $this->request->input('redirect') ? asset($this->request->input('redirect')) : asset('');
+        $this->redirectPath = $this->request->input('redirect') ? asset($this->request->input('redirect')) : asset('');
         $this->redirectToLoginPage = route('front::auth.login.get');
     }
 

@@ -25,6 +25,8 @@ class CreateUserAction extends AbstractAction
     {
         do_action(BASE_ACTION_BEFORE_CREATE, WEBED_USERS, 'create.post');
 
+        $data['created_by'] = get_current_logged_user_id();
+
         $result = $this->repository->createUser($data, $roles);
 
         do_action(BASE_ACTION_AFTER_CREATE, WEBED_USERS, $result);

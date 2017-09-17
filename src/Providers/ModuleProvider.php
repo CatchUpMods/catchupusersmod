@@ -30,6 +30,7 @@ class ModuleProvider extends ServiceProvider
             __DIR__ . '/../../resources/assets' => resource_path('assets'),
         ], 'webed-assets');
         $this->publishes([
+            __DIR__ . '/../../resources/root' => base_path(),
             __DIR__ . '/../../resources/public' => public_path(),
         ], 'webed-public-assets');
     }
@@ -50,12 +51,13 @@ class ModuleProvider extends ServiceProvider
             $this->mergeConfigFrom($row, $key);
         }
 
+        $this->app->register(SocialiteServiceProvider::class);
         $this->app->register(RouteServiceProvider::class);
         $this->app->register(MiddlewareServiceProvider::class);
         $this->app->register(RepositoryServiceProvider::class);
         $this->app->register(HookServiceProvider::class);
         $this->app->register(EventServiceProvider::class);
-        $this->app->register(SocialiteServiceProvider::class);
         $this->app->register(BootstrapModuleServiceProvider::class);
+        $this->app->register(ConsoleServiceProvider::class);
     }
 }

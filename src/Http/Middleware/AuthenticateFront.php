@@ -28,8 +28,6 @@ class AuthenticateFront
             return redirect()->guest(route($this::LOGIN_ROUTE_NAME_GET));
         }
 
-        set_current_logged_user($request->user());
-
         return $next($request);
     }
 

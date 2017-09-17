@@ -39,6 +39,8 @@ class UpdateUserAction extends AbstractAction
             return $this->error(trans('webed-core::base.form.item_not_exists'));
         }
 
+        $data['updated_by'] = get_current_logged_user_id();
+
         $result = $this->repository->updateUser($item, $data, $roles);
 
         do_action(BASE_ACTION_AFTER_UPDATE, WEBED_USERS, $id, $result);

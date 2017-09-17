@@ -1,6 +1,7 @@
 <?php namespace WebEd\Base\Users\Repositories;
 
 use Illuminate\Support\Collection;
+use WebEd\Base\Models\EloquentBase;
 use WebEd\Base\Repositories\Eloquent\Traits\EloquentUseSoftDeletes;
 use WebEd\Base\Repositories\Eloquent\EloquentBaseRepository;
 use WebEd\Base\Users\Models\Contracts\UserModelContract;
@@ -12,12 +13,12 @@ class UserRepository extends EloquentBaseRepository implements UserRepositoryCon
     use EloquentUseSoftDeletes;
 
     /**
-     * @param User|int $user
+     * @param User|EloquentBase|int $user
      * @param array $data
      */
     public function syncRoles($user, array $data)
     {
-        if (!$user instanceof User) {
+        if (!$user instanceof UserModelContract) {
             $user = $this->find($user);
         }
         try {
@@ -30,7 +31,7 @@ class UserRepository extends EloquentBaseRepository implements UserRepositoryCon
     }
 
     /**
-     * @param User|int $user
+     * @param User|EloquentBase|int $user
      * @return Collection
      */
     public function getRoles($user)
@@ -45,7 +46,7 @@ class UserRepository extends EloquentBaseRepository implements UserRepositoryCon
     }
 
     /**
-     * @param User $user
+     * @param User|EloquentBase $user
      * @return array
      */
     public function getRelatedRoleIds($user)
@@ -71,7 +72,7 @@ class UserRepository extends EloquentBaseRepository implements UserRepositoryCon
     }
 
     /**
-     * @param int|User $id
+     * @param int|User|EloquentBase $id
      * @param array $data
      * @param array|null $roles
      * @return int|null|\WebEd\Base\Models\EloquentBase
@@ -92,12 +93,12 @@ class UserRepository extends EloquentBaseRepository implements UserRepositoryCon
     }
 
     /**
-     * @param User|int $user
+     * @param User|EloquentBase|int $user
      * @return bool
      */
     public function isSuperAdmin($user)
     {
-        if (!$user instanceof User) {
+        if (!$user instanceof UserModelContract) {
             $user = $this->find($user);
         }
 
@@ -109,7 +110,7 @@ class UserRepository extends EloquentBaseRepository implements UserRepositoryCon
     }
 
     /**
-     * @param User|int $user
+     * @param User|EloquentBase|int $user
      * @param array $permissions
      * @return bool
      */
@@ -127,13 +128,13 @@ class UserRepository extends EloquentBaseRepository implements UserRepositoryCon
     }
 
     /**
-     * @param User|int $user
+     * @param User|EloquentBase|int $user
      * @param array $roles
      * @return bool
      */
     public function hasRole($user, array $roles)
     {
-        if (!$user instanceof User) {
+        if (!$user instanceof UserModelContract) {
             $user = $this->find($user);
         }
 

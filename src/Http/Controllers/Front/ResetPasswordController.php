@@ -39,7 +39,7 @@ class ResetPasswordController extends BaseFrontController
     public function getIndex()
     {
         $passwordReset = $this->passwordResetRepository
-            ->getPasswordResetByToken($this->request->get('token'));
+            ->getPasswordResetByToken($this->request->input('token'));
 
         if (!$passwordReset) {
             return $this->error('User not exists');
@@ -67,7 +67,7 @@ class ResetPasswordController extends BaseFrontController
      */
     public function postIndex(ResetPasswordRequest $request, ResetPasswordAction $action)
     {
-        $result = $action->run($request->get('token'), $request->get('password'));
+        $result = $action->run($request->input('token'), $request->input('password'));
 
         flash_messages()
             ->addMessages($result['messages'], $result['error'] ? 'error' : 'success')

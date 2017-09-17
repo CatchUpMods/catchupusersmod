@@ -24,6 +24,14 @@ class RestoreUserAction extends AbstractAction
     {
         $id = do_filter(BASE_FILTER_BEFORE_RESTORE, $id, WEBED_USERS);
 
+        if ($id == get_current_logged_user_id()) {
+            return response_with_messages(
+                trans('webed-users::base.cannot_update_status_yourself'),
+                true,
+                \Constants::FORBIDDEN_CODE
+            );
+        }
+
         $result = $this->repository->restore($id);
 
         do_action(BASE_ACTION_AFTER_RESTORE, WEBED_USERS, $id, $result);

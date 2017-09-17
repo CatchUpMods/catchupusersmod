@@ -14,11 +14,10 @@ use WebEd\Base\Users\Http\Requests\UpdateUserPasswordRequest;
 use WebEd\Base\Users\Http\Requests\UpdateUserRequest;
 use WebEd\Base\Users\Repositories\Contracts\UserRepositoryContract;
 use WebEd\Base\Users\Repositories\UserRepository;
-use Yajra\Datatables\Engines\BaseEngine;
 
 class UserController extends BaseAdminController
 {
-    protected $module = 'webed-users';
+    protected $module = WEBED_USERS;
 
     /**
      * @var \WebEd\Base\Users\Repositories\UserRepository
@@ -58,7 +57,7 @@ class UserController extends BaseAdminController
 
     /**
      * Get data for DataTable
-     * @param UsersListDataTable|BaseEngine $usersListDataTable
+     * @param UsersListDataTable $usersListDataTable
      * @return \Illuminate\Http\JsonResponse
      */
     public function postListing(UsersListDataTable $usersListDataTable)
@@ -75,8 +74,8 @@ class UserController extends BaseAdminController
     protected function groupAction()
     {
         $data = [];
-        if ($this->request->get('customActionType', null) == 'group_action') {
-            $actionValue = $this->request->get('customActionValue', 'activated');
+        if ($this->request->input('customActionType', null) == 'group_action') {
+            $actionValue = $this->request->input('customActionValue', 'activated');
 
             if (!$this->repository->hasPermission($this->loggedInUser, ['edit-other-users'])) {
                 return [
@@ -85,7 +84,7 @@ class UserController extends BaseAdminController
                 ];
             }
 
-            $ids = collect($this->request->get('id', []))->filter(function ($value, $index) {
+            $ids = collect($this->request->input('id', []))->filter(function ($value, $index) {
                 return (int)$value !== (int)$this->loggedInUser->id;
             })->toArray();
 
@@ -99,7 +98,7 @@ class UserController extends BaseAdminController
 
                     $action = app(DeleteUserAction::class);
                     foreach ($ids as $id) {
-                        $this->deleteDelete($action, $id);
+                        $this->postDelete($action, $id);
                     }
                     break;
                 default:
@@ -175,11 +174,9 @@ class UserController extends BaseAdminController
             '_token', '_continue_edit', '_tab', 'roles',
         ]);
 
-        if ($request->exists('birthday') && !$request->get('birthday')) {
+        if ($request->exists('birthday') && !$request->input('birthday')) {
             $data['birthday'] = null;
         }
-
-        $data['created_by'] = $this->loggedInUser->id;
 
         $result = $action->run($data);
 
@@ -207,7 +204,7 @@ class UserController extends BaseAdminController
      */
     public function getEdit(RoleRepositoryContract $roleRepository, $id)
     {
-        $this->dis['isLoggedInUser'] = $this->loggedInUser->id === $id ? true : false;
+        $this->dis['isLoggedInUser'] = $this->loggedInUser->id == $id ? true : false;
         $this->dis['isSuperAdmin'] = $this->loggedInUser->isSuperAdmin();
 
         if ($this->loggedInUser->id !== $id) {
@@ -266,13 +263,13 @@ class UserController extends BaseAdminController
         ]);
 
         if ($request->requestHasRoles()) {
-            $roles = $request->getResolvedRoles();
+            $roles = $request->inputResolvedRoles();
         } else {
-            if ($this->request->get('_tab') === 'roles') {
+            if ($this->request->input('_tab') === 'roles') {
                 $roles = [];
             }
         }
-        if ($this->request->exists('birthday') && !$this->request->get('birthday')) {
+        if ($this->request->exists('birthday') && !$this->request->input('birthday')) {
             $data['birthday'] = null;
         }
 
@@ -290,8 +287,6 @@ class UserController extends BaseAdminController
             $roles = null;
         }
 
-        $data['updated_by'] = $this->loggedInUser->id;
-
         return $this->updateUser($id, $data, $roles);
     }
 
@@ -303,7 +298,7 @@ class UserController extends BaseAdminController
     public function postUpdatePassword(UpdateUserPasswordRequest $request, $id)
     {
         return $this->updateUser($id, [
-            'password' => $request->get('password'),
+            'password' => $request->input('password'),
         ]);
     }
 
@@ -337,7 +332,7 @@ class UserController extends BaseAdminController
      * @param $id
      * @return \Illuminate\Http\JsonResponse
      */
-    public function deleteDelete(DeleteUserAction $action, $id)
+    public function postDelete(DeleteUserAction $action, $id)
     {
         $result = $action->run($id);
 
@@ -349,7 +344,7 @@ class UserController extends BaseAdminController
      * @param $id
      * @return \Illuminate\Http\JsonResponse
      */
-    public function deleteForceDelete(DeleteUserAction $action, $id)
+    public function postForceDelete(DeleteUserAction $action, $id)
     {
         $result = $action->run($id, true);
 

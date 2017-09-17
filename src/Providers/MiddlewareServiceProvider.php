@@ -2,12 +2,10 @@
 
 use Illuminate\Routing\Router;
 use Illuminate\Support\ServiceProvider;
-
 use WebEd\Base\Users\Http\Middleware\AuthenticateAdmin;
 use WebEd\Base\Users\Http\Middleware\AuthenticateFront;
 use WebEd\Base\Users\Http\Middleware\GuestAdmin;
 use WebEd\Base\Users\Http\Middleware\GuestFront;
-use WebEd\Base\Users\Http\Middleware\SetupFrontLoggedInUser;
 
 class MiddlewareServiceProvider extends ServiceProvider
 {
@@ -31,8 +29,6 @@ class MiddlewareServiceProvider extends ServiceProvider
 
         if (is_admin_panel()) {
             $router->pushMiddlewareToGroup('web', AuthenticateAdmin::class);
-        } else {
-            $router->pushMiddlewareToGroup('web', SetupFrontLoggedInUser::class);
         }
     }
 }

@@ -53,11 +53,11 @@ Route::group(['prefix' => $adminRoute, 'namespace' => 'WebEd\Base\Users\Http\Con
         $router->post('update-password/{id}', 'UserController@postUpdatePassword')
             ->name('admin::users.update-password.post');
 
-        $router->post('delete/{id}', 'UserController@deleteDelete')
+        $router->post('delete/{id}', 'UserController@postDelete')
             ->name('admin::users.delete.post')
             ->middleware('has-permission:delete-users');
 
-        $router->post('force-delete/{id}', 'UserController@deleteForceDelete')
+        $router->post('force-delete/{id}', 'UserController@postForceDelete')
             ->name('admin::users.force-delete.post')
             ->middleware('has-permission:force-delete-users');
     });

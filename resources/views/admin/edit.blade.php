@@ -55,8 +55,8 @@
                 </ul>
                 <div class="tab-content">
                     <div class="tab-pane {{ $curentTab === 'user_profiles' ? 'active' : '' }}" id="user_profiles">
-                        {!! Form::open(['class' => 'js-validate-form']) !!}
-                        {!! Form::hidden('_tab', 'user_profiles') !!}
+                        {!! form()->open(['class' => 'js-validate-form']) !!}
+                        {!! form()->hidden('_tab', 'user_profiles') !!}
                         <div class="form-group">
                             <label class="control-label "><b>{{ trans('webed-users::base.display_name') }}</b></label>
                             <input type="text" value="{{ $object->display_name or '' }}"
@@ -106,7 +106,7 @@
                             @php
                                 $selected = isset($object->sex) ?  $object->sex : 'female';
                             @endphp
-                            {!! Form::customRadio('sex', [
+                            {!! form()->customRadio('sex', [
                                 ['male', trans('webed-core::base.sex.male')],
                                 ['female', trans('webed-core::base.sex.female')],
                                 ['other', trans('webed-core::base.sex.other')],
@@ -137,13 +137,13 @@
                                 <i class="fa fa-check"></i> {{ trans('webed-core::base.form.save_and_continue') }}
                             </button>
                         </div>
-                        {!! Form::close() !!}
+                        {!! form()->close() !!}
                     </div>
                     <div class="tab-pane {{ $curentTab === 'change_avatar' ? 'active' : '' }}" id="change_avatar">
-                        {!! Form::open(['class' => 'js-validate-form']) !!}
-                        {!! Form::hidden('_tab', 'change_avatar') !!}
+                        {!! form()->open(['class' => 'js-validate-form']) !!}
+                        {!! form()->hidden('_tab', 'change_avatar') !!}
                         <div class="form-group">
-                            {!! Form::selectImageBox('avatar', (isset($object->avatar) ? $object->avatar : '')) !!}
+                            {!! form()->selectImageBox('avatar', (isset($object->avatar) ? $object->avatar : '')) !!}
                         </div>
                         <div class="mt10 text-right">
                             <button class="btn btn-primary" type="submit">
@@ -154,23 +154,24 @@
                                 <i class="fa fa-check"></i> {{ trans('webed-core::base.form.save_and_continue') }}
                             </button>
                         </div>
-                        {!! Form::close() !!}
+                        {!! form()->close() !!}
                     </div>
                     <div class="tab-pane {{ $curentTab === 'change_password' ? 'active' : '' }}" id="change_password">
-                        {!! Form::open(['class' => 'js-validate-form', 'url' => route('admin::users.update-password.post', ['id' => $object->id])]) !!}
-                        {!! Form::hidden('_tab', 'change_password') !!}
+                        {!! form()->open(['class' => 'js-validate-form', 'url' => route('admin::users.update-password.post', ['id' => $object->id])]) !!}
+                        {!! form()->hidden('_tab', 'change_password') !!}
                         @if($isLoggedInUser || (!$isLoggedInUser && !has_permissions($loggedInUser, ['edit-other-users'])))
                             <div class="form-group">
                                 <label>
                                     <b>
-                                        {{ trans('webed-users::base.old_password') }} <span class="text-danger">(*)</span>
+                                        {{ trans('webed-users::base.old_password') }}
+                                        <span class="text-danger">(*)</span>
                                     </b>
                                 </label>
                                 <div class="input-group">
                                 <span class="input-group-addon">
                                     <i class="fa fa-lock"></i>
                                 </span>
-                                    {!! Form::password('old_password', [
+                                    {!! form()->password('old_password', [
                                         'class' => 'form-control',
                                         'id' => 'old_password',
                                         'autocomplete' => 'off',
@@ -188,7 +189,7 @@
                                 <span class="input-group-addon">
                                     <i class="fa fa-lock"></i>
                                 </span>
-                                {!! Form::password('password', [
+                                {!! form()->password('password', [
                                     'class' => 'form-control',
                                     'id' => 'password',
                                     'autocomplete' => 'off',
@@ -205,7 +206,7 @@
                                 <span class="input-group-addon">
                                     <i class="fa fa-lock"></i>
                                 </span>
-                                {!! Form::password('password_confirmation', [
+                                {!! form()->password('password_confirmation', [
                                     'class' => 'form-control',
                                     'id' => 'password_confirmation',
                                     'autocomplete' => 'off',
@@ -221,19 +222,19 @@
                                 <i class="fa fa-check"></i> {{ trans('webed-core::base.form.save_and_continue') }}
                             </button>
                         </div>
-                        {!! Form::close() !!}
+                        {!! form()->close() !!}
                     </div>
                     @if(!$isLoggedInUser && isset($roles))
                         <div class="tab-pane {{ $curentTab === 'roles' ? 'active' : '' }}" id="roles">
-                            {!! Form::open(['class' => 'js-validate-form']) !!}
-                            {!! Form::hidden('_tab', 'roles') !!}
+                            {!! form()->open(['class' => 'js-validate-form']) !!}
+                            {!! form()->hidden('_tab', 'roles') !!}
                             <div class="form-group">
                                 <div class="scroller form-control height-auto"
                                      style="height: 400px;"
                                      data-always-visible="1"
                                      data-rail-visible1="1">
                                     <div class="pad-top-5 pad-bot-5 pad-left-5">
-                                        {!! Form::customCheckbox($roles) !!}
+                                        {!! form()->customCheckbox($roles) !!}
                                     </div>
                                 </div>
                             </div>
@@ -246,7 +247,7 @@
                                     <i class="fa fa-check"></i> {{ trans('webed-core::base.form.save_and_continue') }}
                                 </button>
                             </div>
-                            {!! Form::close() !!}
+                            {!! form()->close() !!}
                         </div>
                     @endif
                     @php do_action(BASE_ACTION_META_BOXES, 'user-tab-pane', WEBED_USERS, $object) @endphp

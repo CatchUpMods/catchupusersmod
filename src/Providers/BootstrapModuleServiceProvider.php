@@ -24,7 +24,7 @@ class BootstrapModuleServiceProvider extends ServiceProvider
     protected function onSessionStarted()
     {
         dashboard_menu()->registerItem([
-            'id' => 'webed-users',
+            'id' => WEBED_USERS,
             'priority' => 3,
             'parent_id' => null,
             'heading' => trans('webed-users::base.admin_menu.heading'),

@@ -32,8 +32,6 @@ class AuthenticateAdmin
 
         dashboard_menu()->setUser($request->user());
 
-        set_current_logged_user($request->user());
-
         return $next($request);
     }
 

@@ -40,7 +40,7 @@ class ForgotPasswordAction extends AbstractAction
 
     public function run(Request $request)
     {
-        $email = $request->get('email');
+        $email = $request->input('email');
 
         $user = $this->userRepository->findWhere([
             'email' => $email,
