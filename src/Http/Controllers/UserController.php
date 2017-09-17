@@ -263,7 +263,7 @@ class UserController extends BaseAdminController
         ]);
 
         if ($request->requestHasRoles()) {
-            $roles = $request->inputResolvedRoles();
+            $roles = $request->input('roles');
         } else {
             if ($this->request->input('_tab') === 'roles') {
                 $roles = [];
