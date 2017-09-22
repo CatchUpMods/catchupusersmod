@@ -62,7 +62,7 @@ class AuthController extends BaseController
      */
     public function getLogin()
     {
-        $this->setBodyClass('login-page');
+        $this->setBodyClass('auth-actions login-page');
         $this->setPageTitle(trans($this->module . '::auth.sign_in'));
 
         return $this->view('admin.auth.login');
