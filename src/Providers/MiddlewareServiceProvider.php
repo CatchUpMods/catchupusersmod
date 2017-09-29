@@ -27,8 +27,8 @@ class MiddlewareServiceProvider extends ServiceProvider
         $router->aliasMiddleware('webed.auth-front', AuthenticateFront::class);
         $router->aliasMiddleware('webed.guest-front', GuestFront::class);
 
-        /*if (is_admin_panel()) {
+        if (is_admin_panel()) {
             $router->pushMiddlewareToGroup('web', AuthenticateAdmin::class);
-        }*/
+        }
     }
 }

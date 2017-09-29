@@ -62,60 +62,7 @@ class UserController extends BaseAdminController
      */
     public function postListing(UsersListDataTable $usersListDataTable)
     {
-        $data = $usersListDataTable->with($this->groupAction());
-
-        return do_filter(BASE_FILTER_CONTROLLER, $data, WEBED_USERS, 'index.post', $this);
-    }
-
-    /**
-     * Handle group actions
-     * @return array
-     */
-    protected function groupAction()
-    {
-        $data = [];
-        if ($this->request->input('customActionType', null) == 'group_action') {
-            $actionValue = $this->request->input('customActionValue', 'activated');
-
-            if (!$this->repository->hasPermission($this->loggedInUser, ['edit-other-users'])) {
-                return [
-                    'customActionMessage' => trans('webed-acl::base.do_not_have_permission'),
-                    'customActionStatus' => 'danger',
-                ];
-            }
-
-            $ids = collect($this->request->input('id', []))->filter(function ($value, $index) {
-                return (int)$value !== (int)$this->loggedInUser->id;
-            })->toArray();
-
-            switch ($actionValue) {
-                case 'deleted':
-                    if (!$this->repository->hasPermission($this->loggedInUser, ['delete-users'])) {
-                        $data['customActionMessage'] = trans('webed-acl::base.do_not_have_permission');
-                        $data['customActionStatus'] = 'danger';
-                        return $data;
-                    }
-
-                    $action = app(DeleteUserAction::class);
-                    foreach ($ids as $id) {
-                        $this->postDelete($action, $id);
-                    }
-                    break;
-                default:
-                    $action = app(UpdateUserAction::class);
-
-                    foreach ($ids as $id) {
-                        $action->run($id, [
-                            'status' => $actionValue,
-                        ]);
-                    }
-                    break;
-            }
-
-            $data['customActionMessage'] = trans('webed-core::base.form.request_completed');
-            $data['customActionStatus'] = 'success';
-        }
-        return $data;
+        return do_filter(BASE_FILTER_CONTROLLER, $usersListDataTable, WEBED_USERS, 'index.post', $this);
     }
 
     /**

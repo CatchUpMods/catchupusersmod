@@ -1,12 +1,11 @@
 <?php namespace WebEd\Base\Users\Http\DataTables;
 
 use WebEd\Base\Http\DataTables\AbstractDataTables;
+use WebEd\Base\Users\Actions\DeleteUserAction;
+use WebEd\Base\Users\Actions\UpdateUserAction;
 use WebEd\Base\Users\Models\User;
 use WebEd\Base\Users\Repositories\Contracts\UserRepositoryContract;
 use WebEd\Base\Users\Repositories\UserRepository;
-use Yajra\Datatables\Engines\CollectionEngine;
-use Yajra\Datatables\Engines\EloquentEngine;
-use Yajra\Datatables\Engines\QueryBuilderEngine;
 
 class UsersListDataTable extends AbstractDataTables
 {
@@ -27,15 +26,14 @@ class UsersListDataTable extends AbstractDataTables
 
     public function __construct(UserRepositoryContract $repository)
     {
-        $this->model = User::select('id', 'created_at', 'avatar', 'username', 'email', 'status', 'sex', 'deleted_at')
-            ->withTrashed();
+        $this->model = User::select('id', 'created_at', 'avatar', 'username', 'email', 'status', 'sex', 'deleted_at')->withTrashed();
 
         $this->request = request();
 
         $this->repository = $repository;
     }
 
-    public function headings()
+    public function headings(): array
     {
         return [
             'avatar' => [
@@ -69,7 +67,7 @@ class UsersListDataTable extends AbstractDataTables
         ];
     }
 
-    public function columns()
+    public function columns(): array
     {
         return [
             ['data' => 'id', 'name' => 'id', 'searchable' => false, 'orderable' => false],
@@ -86,7 +84,7 @@ class UsersListDataTable extends AbstractDataTables
     /**
      * @return string
      */
-    public function run()
+    public function run(): string
     {
         $this->setAjaxUrl(route('admin::users.index.post'), 'POST');
 
@@ -117,7 +115,7 @@ class UsersListDataTable extends AbstractDataTables
     }
 
     /**
-     * @return CollectionEngine|EloquentEngine|QueryBuilderEngine|mixed
+     * @return mixed
      */
     protected function fetchDataForAjax()
     {
@@ -211,5 +209,56 @@ class UsersListDataTable extends AbstractDataTables
 
                 return $editBtn . $activeBtn . $disableBtn . $deleteBtn;
             });
+    }
+
+    /**
+     * Handle group actions
+     * @return array
+     */
+    protected function groupAction(): array
+    {
+        $data = [];
+        if ($this->request->input('customActionType', null) == 'group_action') {
+            $actionValue = $this->request->input('customActionValue', 'activated');
+
+            if (!has_permissions(get_current_logged_user(), ['edit-other-users'])) {
+                return [
+                    'customActionMessage' => trans('webed-acl::base.do_not_have_permission'),
+                    'customActionStatus' => 'danger',
+                ];
+            }
+
+            $ids = collect($this->request->input('id', []))->filter(function ($value, $index) {
+                return (int)$value !== (int)get_current_logged_user_id();
+            })->toArray();
+
+            switch ($actionValue) {
+                case 'deleted':
+                    if (!has_permissions(get_current_logged_user(), ['delete-users'])) {
+                        $data['customActionMessage'] = trans('webed-acl::base.do_not_have_permission');
+                        $data['customActionStatus'] = 'danger';
+                        return $data;
+                    }
+
+                    $action = app(DeleteUserAction::class);
+                    foreach ($ids as $id) {
+                        $action->run($id);
+                    }
+                    break;
+                default:
+                    $action = app(UpdateUserAction::class);
+
+                    foreach ($ids as $id) {
+                        $action->run($id, [
+                            'status' => $actionValue,
+                        ]);
+                    }
+                    break;
+            }
+
+            $data['customActionMessage'] = trans('webed-core::base.form.request_completed');
+            $data['customActionStatus'] = 'success';
+        }
+        return $data;
     }
 }
